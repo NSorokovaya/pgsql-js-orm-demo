@@ -1,4 +1,5 @@
 import { pool } from "../client";
+import prisma from "../prisma-client";
 
 export const findOneWithRolesPermissions = async (id: string) => {
   const client = await pool.connect();
@@ -19,5 +20,30 @@ export const findOneWithRolesPermissions = async (id: string) => {
     return null;
   } finally {
     client.release();
+  }
+};
+
+export const getUsers = async () => {
+  try {
+    const users = await prisma.users.findMany();
+    return users;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+};
+
+export const getUserByID = async (id: string) => {
+  try {
+    const result = await prisma.users.findUnique({
+      where: {
+        id: id,
+      },
+    });
+
+    return result;
+  } catch (error) {
+    console.error(error);
+    return null;
   }
 };

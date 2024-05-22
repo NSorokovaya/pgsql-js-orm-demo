@@ -1,4 +1,3 @@
-import { pool } from "../client";
 import prisma from "../prisma-client";
 import { UpdatePostPatch } from "../types/posts";
 
