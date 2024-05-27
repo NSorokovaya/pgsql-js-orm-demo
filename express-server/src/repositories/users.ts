@@ -1,25 +1,40 @@
-import { pool } from "../client";
 import prisma from "../prisma-client";
 
 export const findOneWithRolesPermissions = async (id: string) => {
-  const client = await pool.connect();
   try {
-    const result = await client.query(
-      `select  u.id as id, r.title as role, p.title as permission from users u
-      inner join user_roles ur on ur.user_id = u.id
-      inner join roles r  on r.id  = ur.role_id 
-      inner join role_permissions rp on rp.role_id = r.id
-      inner join permissions p on p.id = rp.permission_id 
-      where u.id = $1 
-    `,
-      [id]
-    );
-    return result.rows;
+    const userWithRolesPermissions = await prisma.users.findUnique({
+      where: { id },
+      include: {
+        user_roles: {
+          include: {
+            roles: {
+              include: {
+                role_permissions: {
+                  include: {
+                    permissions: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!userWithRolesPermissions) return null;
+
+    const result = userWithRolesPermissions.user_roles.flatMap((userRole) => {
+      return userRole.roles.role_permissions.map((rolePermission) => ({
+        id: userWithRolesPermissions.id,
+        role: userRole.roles.title,
+        permission: rolePermission.permissions.title,
+      }));
+    });
+
+    return result;
   } catch (error) {
     console.log(error);
     return null;
-  } finally {
-    client.release();
   }
 };
 
@@ -42,6 +57,20 @@ export const getUserByID = async (id: string) => {
     });
 
     return result;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+};
+
+export const updateUser = async (id: string, patch: any) => {
+  try {
+    const updateUser = await prisma.users.update({
+      where: { id },
+      data: { username: patch },
+    });
+
+    return updateUser;
   } catch (error) {
     console.error(error);
     return null;
