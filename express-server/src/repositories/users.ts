@@ -67,7 +67,7 @@ export const updateUser = async (id: string, patch: any) => {
   try {
     const updateUser = await prisma.users.update({
       where: { id },
-      data: { username: patch },
+      data: { ...patch },
     });
 
     return updateUser;
