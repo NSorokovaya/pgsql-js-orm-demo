@@ -6,13 +6,11 @@ export const allowedCreatePostsMiddleware = async (
   res: Response,
   next: NextFunction
 ) => {
-  const userWithPermissions = await usersRepository.findOneWithRolesPermissions(
-    req.uid
-  );
+  const userWithPermissions = await usersRepository.getUserPermission(req.uid);
 
   if (
-    !userWithPermissions?.find(
-      (user) =>
+    !userWithPermissions?.roles.find(
+      (user: any) =>
         user.permission === "create_post" ||
         user.role === "Admin" ||
         user.role === "Super Admin"

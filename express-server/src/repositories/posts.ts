@@ -152,3 +152,5 @@ export const getCommentsByPostId = async (postId: string) => {
     return null;
   }
 };
+
+//work with database

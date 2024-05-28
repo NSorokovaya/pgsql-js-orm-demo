@@ -9,14 +9,12 @@ export const allowedUpdatePostMiddleware = async (
 ) => {
   const post = await postsRepository.findOne(req.params.id);
 
-  const userWithPermissions = await usersRepository.findOneWithRolesPermissions(
-    req.uid
-  );
+  const userWithPermissions = await usersRepository.getUserPermission(req.uid);
 
   if (
     post?.user_id !== req.uid &&
-    !userWithPermissions?.find(
-      (user) => user.role === "Admin" || user.role === "Super Admin"
+    !userWithPermissions?.roles.find(
+      (user: any) => user.title === "Admin" || user.title === "Super Admin"
     )
   ) {
     return res.sendStatus(403);

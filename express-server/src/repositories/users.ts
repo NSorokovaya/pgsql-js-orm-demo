@@ -1,42 +1,5 @@
+import { formatUser } from "../formatter";
 import prisma from "../prisma-client";
-
-export const findOneWithRolesPermissions = async (id: string) => {
-  try {
-    const userWithRolesPermissions = await prisma.users.findUnique({
-      where: { id },
-      include: {
-        user_roles: {
-          include: {
-            roles: {
-              include: {
-                role_permissions: {
-                  include: {
-                    permissions: true,
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
-    });
-
-    if (!userWithRolesPermissions) return null;
-
-    const result = userWithRolesPermissions.user_roles.flatMap((userRole) => {
-      return userRole.roles.role_permissions.map((rolePermission) => ({
-        id: userWithRolesPermissions.id,
-        role: userRole.roles.title,
-        permission: rolePermission.permissions.title,
-      }));
-    });
-
-    return result;
-  } catch (error) {
-    console.log(error);
-    return null;
-  }
-};
 
 export const getUsers = async () => {
   try {
@@ -73,6 +36,33 @@ export const updateUser = async (id: string, patch: any) => {
     return updateUser;
   } catch (error) {
     console.error(error);
+    return null;
+  }
+};
+
+export const getUserPermission = async (id: string) => {
+  try {
+    const user = await prisma.users.findUnique({
+      where: { id },
+      include: {
+        user_roles: {
+          include: {
+            roles: {
+              include: {
+                role_permissions: {
+                  include: {
+                    permissions: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+    return formatUser(user);
+  } catch (error) {
+    console.log(error);
     return null;
   }
 };

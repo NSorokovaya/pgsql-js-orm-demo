@@ -33,3 +33,4 @@ export const unarchivePost = async (id: string) => {
 export const destroyPost = async (id: string) => {
   return await postsRepository.destroy(id);
 };
+//business logic
