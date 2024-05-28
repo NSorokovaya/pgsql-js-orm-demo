@@ -137,3 +137,18 @@ export const destroy = async (id: string) => {
     return null;
   }
 };
+
+export const getCommentsByPostId = async (postId: string) => {
+  try {
+    const comments = await prisma.comments.findMany({
+      where: {
+        post_id: postId,
+      },
+    });
+
+    return comments;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+};
