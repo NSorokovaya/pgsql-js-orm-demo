@@ -87,7 +87,7 @@ export const deleteUserAndPosts = async (id: string) => {
       });
     });
 
-    console.log("Deleted");
+    return "Deleted";
   } catch (error) {
     console.error("Error", error);
     throw error;
