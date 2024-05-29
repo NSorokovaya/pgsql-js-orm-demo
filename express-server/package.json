@@ -5,12 +5,17 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon ./src/index.ts",
+    "init": "prisma init",
+    "pull": "prisma db pull",
+    "generate": "prisma generate",
+    "migrate": "prisma migrate dev",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@prisma/client": "^5.14.0",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "jsonwebtoken": "^9.0.2",
@@ -21,6 +26,7 @@
     "@types/jsonwebtoken": "^9.0.6",
     "@types/pg": "^8.11.6",
     "nodemon": "^3.1.0",
+    "prisma": "^5.14.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.4.5"
   }

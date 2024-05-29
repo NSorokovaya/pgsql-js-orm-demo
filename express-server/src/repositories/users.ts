@@ -66,3 +66,50 @@ export const getUserPermission = async (id: string) => {
     return null;
   }
 };
+
+export const deleteUserAndPosts = async (id: string) => {
+  if (!id) {
+    throw new Error("User ID is required");
+  }
+
+  try {
+    await prisma.$transaction(async (prisma) => {
+      await prisma.posts.deleteMany({
+        where: {
+          user_id: id,
+        },
+      });
+
+      await prisma.users.delete({
+        where: {
+          id: id,
+        },
+      });
+    });
+
+    console.log("Deleted");
+  } catch (error) {
+    console.error("Error", error);
+    throw error;
+  }
+};
+
+// export const deletePosts = async (id: string) => {
+//   if (!id) {
+//     throw new Error("User ID is required");
+//   }
+
+//   try {
+//     const result = prisma.posts.deleteMany({
+//       where: {
+//         user_id: id,
+//       },
+//     });
+
+//     console.log("Deleted");
+//     return result;
+//   } catch (error) {
+//     console.error("Error:", error);
+//     throw error;
+//   }
+// };
