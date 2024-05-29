@@ -94,22 +94,19 @@ export const deleteUserAndPosts = async (id: string) => {
   }
 };
 
-// export const deletePosts = async (id: string) => {
-//   if (!id) {
-//     throw new Error("User ID is required");
-//   }
-
-//   try {
-//     const result = prisma.posts.deleteMany({
-//       where: {
-//         user_id: id,
-//       },
-//     });
-
-//     console.log("Deleted");
-//     return result;
-//   } catch (error) {
-//     console.error("Error:", error);
-//     throw error;
-//   }
-// };
+export const createFriendRequest = async (
+  requesterId: string,
+  receiverId: string
+) => {
+  try {
+    const friendRequest = await prisma.friends.create({
+      data: {
+        requester_id: requesterId,
+        receiver_id: receiverId,
+      },
+    });
+    return friendRequest;
+  } catch (error) {
+    console.error("Error creating friend request:", error);
+  }
+};
