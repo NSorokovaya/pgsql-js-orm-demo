@@ -16,8 +16,10 @@ describe("getUserByID", () => {
     const res = {
       send: jest.fn(),
     } as unknown as Response;
-
-    expect(await getUserByID(req, res)).throws;
+    await getUserByID(req, res);
+    expect(mockgetUserByID).rejects.toThrow(
+      "Please provide fields to get user"
+    );
   });
 
   it("should call get user by id method if arguments are correct", async () => {
