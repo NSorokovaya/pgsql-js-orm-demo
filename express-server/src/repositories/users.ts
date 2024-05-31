@@ -108,5 +108,6 @@ export const createFriendRequest = async (
     return friendRequest;
   } catch (error) {
     console.error("Error creating friend request:", error);
+    throw error;
   }
 };
