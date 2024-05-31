@@ -9,7 +9,8 @@
     "pull": "prisma db pull",
     "generate": "prisma generate",
     "migrate": "prisma migrate dev",
-    "test": "jest --coverage --collectCoverageFrom='src/**/*.{ts,tsx}'",
+    "test": "jest",
+    "test:all": "jest --coverage --collectCoverageFrom='src/**/*.{ts,tsx}'",
     "test:coverage": "open-cli coverage/lcov-report/index.html"
   },
   "keywords": [],
