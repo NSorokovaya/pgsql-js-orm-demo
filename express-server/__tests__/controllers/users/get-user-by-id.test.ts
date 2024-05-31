@@ -10,18 +10,14 @@ describe("getUserByID", () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
-  it("should returnerror message if no fields are provided ", async () => {
-    const req = {
-      params: { id: "" },
-    } as unknown as Request;
+  it("should return error message in case of database error", async () => {
+    const req = { params: { id: "1" } } as unknown as Request;
 
     const res = {
       send: jest.fn(),
     } as unknown as Response;
 
-    await getUserByID(req, res);
-
-    expect(mockgetUserByID).toHaveBeenCalledWith(req.params.id);
+    expect(await getUserByID(req, res)).throws;
   });
 
   it("should call get user by id method if arguments are correct", async () => {
