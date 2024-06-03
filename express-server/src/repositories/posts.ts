@@ -1,24 +1,37 @@
-import { pool } from "../client";
+import prisma from "../prisma-client";
 import { UpdatePostPatch } from "../types/posts";
 
 export const list = async (orderBy: string, search?: string) => {
-  const client = await pool.connect();
-
+  const orderByField = orderBy || "createdAt";
   try {
-    let query = "SELECT * FROM posts";
-    const queryParams: (string | number)[] = [];
+    const getList = await prisma.posts.findMany({
+      where: search
+        ? {
+            OR: [
+              {
+                title: {
+                  contains: search,
+                  mode: "insensitive",
+                },
+              },
+              {
+                content: {
+                  contains: search,
+                  mode: "insensitive",
+                },
+              },
+            ],
+          }
+        : {},
+      orderBy: {
+        [orderByField]: "desc",
+      },
+    });
 
-    if (search) {
-      query += " WHERE title ILIKE $1 OR content ILIKE $1";
-      queryParams.push(`%${search}%`);
-    }
-
-    query += ` ORDER BY ${orderBy || "created_at"} DESC`;
-
-    const result = await client.query(query, queryParams);
-    return result.rows;
-  } finally {
-    client.release();
+    return getList;
+  } catch (error) {
+    console.log(error);
+    return [];
   }
 };
 
@@ -28,109 +41,116 @@ export const listPage = async (
   orderBy: string,
   search?: string
 ) => {
-  const client = await pool.connect();
-
+  const orderByField = orderBy || "createdAt";
   try {
-    let query = "SELECT * FROM posts";
-    const queryParams: (string | number)[] = [];
+    const posts = await prisma.posts.findMany({
+      where: search
+        ? {
+            OR: [
+              {
+                title: {
+                  contains: search,
+                  mode: "insensitive",
+                },
+              },
+              {
+                content: {
+                  contains: search,
+                  mode: "insensitive",
+                },
+              },
+            ],
+          }
+        : {},
+      orderBy: {
+        [orderByField]: "desc",
+      },
+      take: limit,
+      skip: offset,
+    });
 
-    if (search) {
-      query += " WHERE title ILIKE $1 OR content ILIKE $1";
-      queryParams.push(`%${search}%`);
-    }
-
-    query += ` ORDER BY ${orderBy || "created_at"} DESC LIMIT $2 OFFSET $3`;
-    queryParams.push(limit, offset);
-
-    const result = await client.query(query, queryParams);
-    return result.rows;
-  } finally {
-    client.release();
+    return posts;
+  } catch (error) {
+    console.log(error);
+    return [];
   }
 };
 
 export const findOne = async (id: string) => {
-  const client = await pool.connect();
-
   try {
-    const result = await client.query("SELECT * FROM posts WHERE id = $1", [
-      id,
-    ]);
+    const result = await prisma.posts.findUnique({
+      where: {
+        id: id,
+      },
+    });
 
-    return result.rows[0];
+    return result;
   } finally {
-    client.release();
+    await prisma.$disconnect;
   }
 };
 
 export const create = async (
-  userId: string,
+  user_id: string,
   title: string,
   content: string
 ) => {
-  const client = await pool.connect();
-
   try {
-    const result = await client.query(
-      "INSERT INTO posts (user_id, title, content) VALUES ($1, $2, $3) RETURNING *",
-      [userId, title, content]
-    );
+    const createPost = await prisma.posts.create({
+      data: {
+        user_id: user_id,
+        title: title,
+        content: content,
+      },
+    });
 
-    return result.rows[0];
-  } finally {
-    client.release();
+    return createPost;
+  } catch (error) {
+    console.error(error);
+    return null;
   }
 };
 
 export const update = async (id: string, patch: UpdatePostPatch) => {
-  const client = await pool.connect();
-
   try {
-    const values = Object.keys(patch)
-      .filter(
-        (field) => field && patch[field as keyof UpdatePostPatch] !== undefined
-      )
-      .map((field) => {
-        const value = patch[field as keyof UpdatePostPatch];
-        if (field === "deleted_at" && value) {
-          return `deleted_at = NOW()`;
-        }
+    const updatedPost = await prisma.posts.update({
+      where: { id },
+      data: patch,
+    });
 
-        if (field === "deleted_at" && value === null) {
-          return `deleted_at = NULL`;
-        }
-
-        return `${field} = '${value}'`;
-      })
-      .join(", ");
-
-    const result = await client.query(
-      `UPDATE posts
-      SET ${values}
-      WHERE id = $1
-      RETURNING *`,
-      [id]
-    );
-
-    return result.rows[0];
-  } finally {
-    client.release();
+    return updatedPost;
+  } catch (error) {
+    console.error(error);
+    return null;
   }
 };
 
 export const destroy = async (id: string) => {
-  const client = await pool.connect();
-
   try {
-    const result = await client.query(
-      `DELETE FROM posts
-      WHERE id = $1
-      RETURNING *`,
-      [id]
-    );
+    const deletedPost = await prisma.posts.delete({
+      where: { id },
+    });
 
-    return result.rows[0];
-  } finally {
-    client.release();
+    return deletedPost;
+  } catch (error) {
+    console.error(error);
+    return null;
   }
 };
+
+export const getCommentsByPostId = async (postId: string) => {
+  try {
+    const comments = await prisma.comments.findMany({
+      where: {
+        post_id: postId,
+      },
+    });
+
+    return comments;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+};
+
+//work with database
