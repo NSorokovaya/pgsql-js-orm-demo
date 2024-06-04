@@ -8,7 +8,7 @@ import {
   Put,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { User } from './entities/user.entity';
+import { User } from '../entities/user.entity';
 
 @Controller('users')
 export class UsersController {
@@ -22,8 +22,19 @@ export class UsersController {
   // get user by id
   @Get(':id')
   async getUserById(@Param('id') id: string): Promise<User | undefined> {
-    console.log(id);
-    return this.usersService.findById(id);
+    try {
+      const result = this.usersService.findById(id);
+      return result;
+    } catch (error) {
+      console.error(error);
+      throw new HttpException(
+        {
+          status: HttpStatus.INTERNAL_SERVER_ERROR,
+          error: 'Internal server error',
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
   // update user
