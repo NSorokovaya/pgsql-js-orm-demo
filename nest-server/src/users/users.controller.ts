@@ -22,54 +22,39 @@ export class UsersController {
   // get user by id
   @Get(':id')
   async getUserById(@Param('id') id: string): Promise<User | undefined> {
-    try {
-      const result = this.usersService.findById(id);
-      return result;
-    } catch (error) {
-      console.error(error);
+    const result = this.usersService.findById(id);
+    if (!result) {
       throw new HttpException(
-        {
-          status: HttpStatus.INTERNAL_SERVER_ERROR,
-          error: 'Internal server error',
-        },
-        HttpStatus.INTERNAL_SERVER_ERROR,
+        { error: 'Id is not found' },
+        HttpStatus.NOT_FOUND,
       );
     }
+    return result;
   }
 
   // update user
   @Put(':id')
   async update(@Param('id') id: string, @Body() updateUserDto: any) {
-    try {
-      const result = await this.usersService.updateUser(id, updateUserDto);
-      return { data: result };
-    } catch (error) {
-      console.error(error);
+    if (!Object.keys(updateUserDto).length) {
       throw new HttpException(
-        {
-          status: HttpStatus.INTERNAL_SERVER_ERROR,
-          error: 'Internal server error',
-        },
-        HttpStatus.INTERNAL_SERVER_ERROR,
+        { error: 'Please provide fields to update' },
+        HttpStatus.BAD_REQUEST,
       );
     }
+    const result = await this.usersService.updateUser(id, updateUserDto);
+    return { data: result };
   }
   //get permission
 
   @Get(':id/permissions')
   async getUserPermission(@Param('id') id: string) {
-    try {
-      const user = await this.usersService.getUserPermission(id);
-      return { data: user };
-    } catch (error) {
-      console.error(error);
+    const user = await this.usersService.getUserPermission(id);
+    if (!user) {
       throw new HttpException(
-        {
-          status: HttpStatus.INTERNAL_SERVER_ERROR,
-          error: 'Internal server error',
-        },
-        HttpStatus.INTERNAL_SERVER_ERROR,
+        { error: 'user is not found' },
+        HttpStatus.NOT_FOUND,
       );
     }
+    return { data: user };
   }
 }

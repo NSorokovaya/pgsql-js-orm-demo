@@ -69,4 +69,24 @@ export class PostsService {
     Object.assign(post, updatePostDto);
     return await this.postsRepository.save(post);
   }
+
+  //delete post
+  async destroy(id: string): Promise<Post | null> {
+    const post = await this.postsRepository.findOneBy({ id });
+    await this.postsRepository.remove(post);
+    return post;
+  }
+
+  //archive
+  async archive(id: string): Promise<Post | null> {
+    const post = await this.postsRepository.findOneBy({ id });
+    post.deleted_at = new Date();
+    return await this.postsRepository.save(post);
+  }
+
+  async unarchive(id: string): Promise<Post | null> {
+    const post = await this.postsRepository.findOneBy({ id });
+    post.deleted_at = null;
+    return await this.postsRepository.save(post);
+  }
 }
