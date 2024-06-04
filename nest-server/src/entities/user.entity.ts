@@ -18,6 +18,15 @@ export class User {
   @Column({ length: 255 })
   password: string;
 
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  created_at: Date;
+
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  updated_at: Date;
+
+  @Column({ type: 'timestamp', nullable: true })
+  deleted_at: Date | null;
+
   @ManyToMany(() => UserRole, (userRole) => userRole.user)
   @JoinTable()
   user_roles: UserRole[];

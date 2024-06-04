@@ -4,11 +4,9 @@ import {
   Controller,
   Get,
   Query,
-  Res,
   HttpStatus,
   Param,
   Post,
-  Req,
   Body,
   HttpException,
   Patch,
@@ -17,9 +15,8 @@ import {
   Put,
 } from '@nestjs/common';
 import { PostsService } from './posts.service';
-import { Response } from 'express';
-import { CreatePostDto } from 'src/entities/dto/posts/create-post.dto';
-import { UpdatePostDto } from 'src/entities/dto/posts/update-post.dto';
+import { CreatePostDto } from 'src/dto/posts/create-post.dto';
+import { UpdatePostDto } from 'src/dto/posts/update-post.dto';
 
 @Controller('posts')
 export class PostsController {
