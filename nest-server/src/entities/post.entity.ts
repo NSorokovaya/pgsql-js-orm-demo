@@ -5,6 +5,9 @@ export class Post {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
+  @Column({ length: 50 })
+  user_id: string;
+
   @Column({ length: 255 })
   title: string;
 
@@ -16,4 +19,7 @@ export class Post {
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   updated_at: Date;
+
+  @Column({ type: 'timestamp', nullable: true })
+  deleted_at: Date | null;
 }

@@ -1,9 +1,10 @@
 // src/posts/posts.service.ts
 
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Post } from '../entities/post.entity';
+import { UpdatePostDto } from 'src/entities/dto/posts/update-post.dto';
 
 @Injectable()
 export class PostsService {
@@ -46,8 +47,26 @@ export class PostsService {
 
     return queryBuilder.orderBy(`post.${orderBy}`, 'ASC').getMany();
   }
-
+  //get post by id
   async findOne(id: string): Promise<Post> {
     return this.postsRepository.findOneBy({ id });
+  }
+  //create post
+  async create(user_id: string, title: string, content: string): Promise<Post> {
+    const post = this.postsRepository.create({
+      title,
+      content,
+      user_id,
+    });
+
+    return this.postsRepository.save(post);
+  }
+
+  //update post
+
+  async update(id: string, updatePostDto: UpdatePostDto): Promise<Post> {
+    const post = await this.postsRepository.findOneBy({ id });
+    Object.assign(post, updatePostDto);
+    return await this.postsRepository.save(post);
   }
 }
