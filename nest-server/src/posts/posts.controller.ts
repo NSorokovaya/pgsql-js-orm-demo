@@ -65,16 +65,10 @@ export class PostsController {
   @Post()
   async create(@Body() createPostDto: CreatePostDto) {
     const { title, content, user_id } = createPostDto;
-    if (!title || !content || !user_id) {
-      throw new HttpException(
-        { error: 'Missing required fields' },
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-
     const post = await this.postsService.create(user_id, title, content);
     return { data: post };
   }
+
   //update post
   @Patch(':id')
   async update(@Param('id') id: string, @Body() updatePostDto: UpdatePostDto) {
