@@ -22,6 +22,7 @@ export class UsersController {
   // get user by id
   @Get(':id')
   async getUserById(@Param('id') id: string): Promise<User | undefined> {
+    console.log(id);
     return this.usersService.findById(id);
   }
 
