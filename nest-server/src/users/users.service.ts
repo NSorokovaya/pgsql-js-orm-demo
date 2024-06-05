@@ -29,19 +29,26 @@ export class UsersService {
     return updatedUser;
   }
 
-  async getUserPermission(id: string): Promise<User> {
-    const user = await this.usersRepository.findOne({
-      where: { id },
-      relations: [
-        'user_roles',
-        'user_roles.role',
-        'user_roles.role.role_permissions',
-        'user_roles.role.role_permissions.permission',
-        'user_permissions',
-        'user_permissions.permission',
-      ],
-    });
+  // async getUserPermission(id: string): Promise<User> {
+  //   const user = await this.usersRepository.findOne({
+  //     where: { id },
+  //     relations: [
+  //       'user_roles',
+  //       'user_roles.role',
+  //       'user_roles.role.role_permissions',
+  //       'user_roles.role.role_permissions.permission',
+  //       'user_permissions',
+  //       'user_permissions.permission',
+  //     ],
+  //   });
 
-    return user;
+  //   return user;
+  // }
+
+  async findRoleAndPermissionById(id: string): Promise<User | undefined> {
+    return this.usersRepository.findOne({
+      where: { id },
+      relations: ['roles', 'permissions'],
+    });
   }
 }

@@ -51,7 +51,7 @@ export class UsersController {
 
   @Get(':id/permissions')
   async getUserPermission(@Param('id') id: string) {
-    const user = await this.usersService.getUserPermission(id);
+    const user = await this.usersService.findRoleAndPermissionById(id);
     if (!user) {
       throw new HttpException(
         { error: 'user is not found' },
