@@ -1,10 +1,18 @@
-import { Column, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { Post } from './post.entity';
 
-export class CommentEntity {
+@Entity({ name: 'comments' })
+export class Comment {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ length: 50 })
+  @Column({ name: 'post_id' })
   post_id: string;
 
   @Column({ length: 50 })
@@ -21,4 +29,8 @@ export class CommentEntity {
 
   @Column({ type: 'timestamp', nullable: true })
   deleted_at: Date | null;
+
+  @ManyToOne(() => Post, (post) => post.comments)
+  @JoinColumn({ name: 'post_id' })
+  post: Post[];
 }

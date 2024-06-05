@@ -19,7 +19,12 @@ export class PostsService {
     orderBy: string,
     search?: string,
   ): Promise<Post[]> {
-    const queryBuilder = this.postsRepository.createQueryBuilder('post');
+    const queryBuilder = this.postsRepository
+      .createQueryBuilder('post')
+      .leftJoinAndSelect('post.comments', 'comment')
+      .orderBy(`post.${orderBy}`, 'ASC')
+      .offset(offset)
+      .limit(limit);
 
     if (search) {
       queryBuilder.where(
@@ -28,24 +33,38 @@ export class PostsService {
       );
     }
 
-    return queryBuilder
-      .orderBy(`post.${orderBy}`, 'ASC')
-      .offset(offset)
-      .limit(limit)
-      .getMany();
+    const posts = await queryBuilder.getMany();
+
+    posts.forEach((post) => {
+      post.comments = post.comments.slice(0, 3);
+    });
+
+    return posts;
   }
 
   async list(orderBy: string, search?: string): Promise<Post[]> {
-    const queryBuilder = this.postsRepository.createQueryBuilder('post');
+    console.log('list');
+    // const queryBuilder = this.postsRepository
+    //   .createQueryBuilder('post')
+    //   .leftJoinAndSelect('comments', 'comment')
+    //   .orderBy(`post.${orderBy}`, 'ASC');
 
-    if (search) {
-      queryBuilder.where(
-        'post.title LIKE :search OR post.content LIKE :search',
-        { search: `%${search}%` },
-      );
-    }
+    // if (search) {
+    //   queryBuilder.where(
+    //     'post.title LIKE :search OR post.content LIKE :search',
+    //     { search: `%${search}%` },
+    //   );
+    // }
 
-    return queryBuilder.orderBy(`post.${orderBy}`, 'ASC').getMany();
+    // const posts = await queryBuilder.getMany();
+
+    const posts = await this.postsRepository.find({ relations: ['comments'] });
+
+    // posts.forEach((post) => {
+    //   post.comments = post.comments.slice(0, 3);
+    // });
+
+    return posts;
   }
   //get post by id
   async findOne(id: string): Promise<Post> {

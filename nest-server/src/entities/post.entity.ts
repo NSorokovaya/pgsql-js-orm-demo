@@ -1,4 +1,11 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  OneToMany,
+  JoinColumn,
+} from 'typeorm';
+import { Comment } from './comment.entity';
 
 @Entity({ name: 'posts' })
 export class Post {
@@ -22,4 +29,8 @@ export class Post {
 
   @Column({ type: 'timestamp', nullable: true })
   deleted_at: Date | null;
+
+  @OneToMany(() => Comment, (comment) => comment.post)
+  @JoinColumn({ name: 'id', referencedColumnName: 'post_id' })
+  comments: Comment[];
 }
