@@ -6,9 +6,11 @@ import {
   HttpStatus,
   Param,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { User } from '../entities/user.entity';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Controller('users')
 export class UsersController {
@@ -20,6 +22,7 @@ export class UsersController {
     return this.usersService.findAll();
   }
   // get user by id
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
   async getUserById(@Param('id') id: string): Promise<User | undefined> {
     const result = this.usersService.findById(id);

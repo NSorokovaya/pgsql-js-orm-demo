@@ -13,15 +13,18 @@ import {
   NotFoundException,
   Delete,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { CreatePostDto } from 'src/dto/posts/create-post.dto';
 import { UpdatePostDto } from 'src/dto/posts/update-post.dto';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Controller('posts')
 export class PostsController {
   constructor(private readonly postsService: PostsService) {}
   // get all posts
+  @UseGuards(JwtAuthGuard)
   @Get()
   async list(@Query() query) {
     const validOrderByFields = ['created_at', 'title'];
@@ -47,6 +50,7 @@ export class PostsController {
   }
 
   //get posts by id
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
   async findOne(@Param('id') id: string) {
     const post = await this.postsService.findOne(id);
@@ -59,6 +63,7 @@ export class PostsController {
     return { data: post };
   }
   // create post
+  @UseGuards(JwtAuthGuard)
   @Post()
   async create(@Body() createPostDto: CreatePostDto) {
     const { title, content, user_id } = createPostDto;
@@ -67,6 +72,7 @@ export class PostsController {
   }
 
   //update post
+  @UseGuards(JwtAuthGuard)
   @Patch(':id')
   async update(@Param('id') id: string, @Body() updatePostDto: UpdatePostDto) {
     if (!Object.keys(updatePostDto).length) {
@@ -81,6 +87,7 @@ export class PostsController {
   }
 
   //delete
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   async destroy(@Param('id') id: string) {
     const post = await this.postsService.findOne(id);
@@ -95,6 +102,7 @@ export class PostsController {
     return { data: 'Post removed', result };
   }
   //archive
+  @UseGuards(JwtAuthGuard)
   @Delete(':id/archive')
   async archive(@Param('id') id: string) {
     const result = await this.postsService.archive(id);
@@ -105,6 +113,7 @@ export class PostsController {
   }
 
   //unarchive
+  @UseGuards(JwtAuthGuard)
   @Put(':id/unarchive')
   async unarchive(@Param('id') id: string) {
     const result = await this.postsService.unarchive(id);
