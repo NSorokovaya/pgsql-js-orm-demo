@@ -4,23 +4,25 @@ import {
   Column,
   ManyToMany,
   JoinTable,
-  ManyToOne,
 } from 'typeorm';
-import { RolePermission } from './role-permission.entity';
-import { UserRole } from './user-role.entity';
+import { User } from './user.entity';
 
-@Entity()
+@Entity({ name: 'roles' })
 export class Role {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column()
-  name: string;
+  title: string;
 
-  @ManyToMany(() => RolePermission, (rolePermission) => rolePermission.role)
-  @JoinTable()
-  role_permissions: RolePermission[];
+  @ManyToMany(() => User, (user) => user.roles)
+  @JoinTable({
+    name: 'user_roles',
+    joinColumn: { name: 'role_id', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'user_id', referencedColumnName: 'id' },
+  })
+  users: User[];
 
-  @ManyToOne(() => UserRole, (userRole) => userRole.role)
-  user_roles: UserRole[];
+  // @OneToMany(() => RolePermission, (rolePermission) => rolePermission.role)
+  // role_permissions: RolePermission[];
 }

@@ -19,12 +19,13 @@ import { PostsService } from './posts.service';
 import { CreatePostDto } from 'src/dto/posts/create-post.dto';
 import { UpdatePostDto } from 'src/dto/posts/update-post.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { AdminGuard } from 'src/auth/admin.guard';
 
 @Controller('posts')
 export class PostsController {
   constructor(private readonly postsService: PostsService) {}
   // get all posts
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, AdminGuard)
   @Get()
   async list(@Query() query) {
     const validOrderByFields = ['created_at', 'title'];

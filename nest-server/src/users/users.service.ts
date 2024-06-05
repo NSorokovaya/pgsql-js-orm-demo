@@ -14,7 +14,10 @@ export class UsersService {
     return this.usersRepository.find();
   }
   async findById(id: string): Promise<User | undefined> {
-    return this.usersRepository.findOne({ where: { id } });
+    return this.usersRepository.findOne({
+      where: { id },
+      relations: ['roles'],
+    });
   }
 
   async updateUser(id: string, updateUserDto: any): Promise<User> {
@@ -27,21 +30,18 @@ export class UsersService {
   }
 
   async getUserPermission(id: string): Promise<User> {
-    try {
-      const user = await this.usersRepository.findOne({
-        where: { id },
-        relations: [
-          'user_roles',
-          'user_roles.role',
-          'user_roles.role.role_permissions',
-          'user_roles.role.role_permissions.permission',
-        ],
-      });
+    const user = await this.usersRepository.findOne({
+      where: { id },
+      relations: [
+        'user_roles',
+        'user_roles.role',
+        'user_roles.role.role_permissions',
+        'user_roles.role.role_permissions.permission',
+        'user_permissions',
+        'user_permissions.permission',
+      ],
+    });
 
-      return user;
-    } catch (error) {
-      console.error(error);
-      throw new NotFoundException(`User with id ${id} not found`);
-    }
+    return user;
   }
 }

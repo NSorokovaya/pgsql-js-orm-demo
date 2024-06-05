@@ -5,7 +5,8 @@ import {
   ManyToMany,
   JoinTable,
 } from 'typeorm';
-import { UserRole } from './user-role.entity';
+
+import { Role } from './role.entity';
 
 @Entity({ name: 'users' })
 export class User {
@@ -27,7 +28,13 @@ export class User {
   @Column({ type: 'timestamp', nullable: true })
   deleted_at: Date | null;
 
-  @ManyToMany(() => UserRole, (userRole) => userRole.user)
-  @JoinTable()
-  user_roles: UserRole[];
+  @ManyToMany(() => Role, (role) => role.users)
+  @JoinTable({
+    name: 'user_roles',
+    joinColumn: { name: 'user_id', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'role_id', referencedColumnName: 'id' },
+  })
+  roles: Role[];
 }
+//manytomay
+//join table

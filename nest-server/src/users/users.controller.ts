@@ -22,7 +22,7 @@ export class UsersController {
     return this.usersService.findAll();
   }
   // get user by id
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   @Get(':id')
   async getUserById(@Param('id') id: string): Promise<User | undefined> {
     const result = this.usersService.findById(id);
