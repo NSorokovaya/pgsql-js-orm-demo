@@ -7,6 +7,9 @@ export const createPost = async (
   title: string,
   content: string
 ) => {
+  // select all posts user has
+  // write posts to mongo
+
   return await postsRepository.create(userId, title, content);
 };
 
