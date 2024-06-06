@@ -11,6 +11,7 @@ import { destroy } from "./destroy";
 import { authMiddleware } from "../../middlewares/auth";
 import { allowedCreatePostsMiddleware } from "../../middlewares/posts/allowed-create-posts";
 import { allowedUpdatePostMiddleware } from "../../middlewares/posts/allowed-update-post";
+import { getCommentsByPost } from "./get-comments-by-post-id";
 
 const postsRouter = express.Router();
 
@@ -37,5 +38,7 @@ postsRouter.delete(
   [authMiddleware, allowedUpdatePostMiddleware],
   destroy
 );
+
+postsRouter.get("/:postId/comments", getCommentsByPost);
 
 export { postsRouter };
