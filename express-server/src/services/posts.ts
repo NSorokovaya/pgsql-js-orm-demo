@@ -1,5 +1,5 @@
 import * as postsRepository from "../repositories/posts";
-
+import * as analyticsRepository from "../repositories/mongoose/analytics";
 import { UpdatePostPatch } from "../types/posts";
 
 export const createPost = async (
@@ -7,8 +7,9 @@ export const createPost = async (
   title: string,
   content: string
 ) => {
-  // select all posts user has
-  // write posts to mongo
+  await analyticsRepository.createAnalytics("create post", {
+    authorId: userId,
+  });
 
   return await postsRepository.create(userId, title, content);
 };

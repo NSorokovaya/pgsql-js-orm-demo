@@ -17,27 +17,11 @@ const postsRouter = express.Router();
 
 postsRouter.get("/", list);
 postsRouter.get("/:id", findOne);
-postsRouter.post("/", [authMiddleware, allowedCreatePostsMiddleware], create);
-postsRouter.patch(
-  "/:id",
-  [authMiddleware, allowedUpdatePostMiddleware],
-  update
-);
-postsRouter.put(
-  "/:id/unarchive",
-  [authMiddleware, allowedUpdatePostMiddleware],
-  unarchive
-);
-postsRouter.delete(
-  "/:id/archive",
-  [authMiddleware, allowedUpdatePostMiddleware],
-  archive
-);
-postsRouter.delete(
-  "/:id",
-  [authMiddleware, allowedUpdatePostMiddleware],
-  destroy
-);
+postsRouter.post("/", [authMiddleware], create);
+postsRouter.patch("/:id", [authMiddleware], update);
+postsRouter.put("/:id/unarchive", [authMiddleware], unarchive);
+postsRouter.delete("/:id/archive", [authMiddleware], archive);
+postsRouter.delete("/:id", [authMiddleware], destroy);
 
 postsRouter.get("/:postId/comments", getCommentsByPost);
 
