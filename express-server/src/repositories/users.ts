@@ -112,15 +112,10 @@ export const createFriendRequest = async (
 };
 
 export const getUserFriends = async (userID: string) => {
-  const friends = await prisma.users.findUnique({
+  const userWithFriends = await prisma.users.findUnique({
     where: { id: userID },
-    include: {
-      friendsA: {
-        include: {
-          receiver: true,
-        },
-      },
-    },
+    include: { receiverFriends: true, requesterFriends: true },
   });
-  return friends;
+
+  return userWithFriends;
 };

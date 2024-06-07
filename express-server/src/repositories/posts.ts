@@ -153,7 +153,7 @@ export const getCommentsByPostId = async (postId: string) => {
   }
 };
 
-export const getUserPost = async (id: string) => {
+export const getUserPosts = async (id: string) => {
   const posts = await prisma.posts.findMany({
     where: {
       user_id: id,

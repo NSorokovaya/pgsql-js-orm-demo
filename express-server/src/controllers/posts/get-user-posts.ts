@@ -4,7 +4,7 @@ import * as postsRepository from "../../repositories/posts";
 
 export const getUserPosts = async (req: Request, res: Response) => {
   try {
-    const posts = await postsRepository.getUserPost(req.params.id);
+    const posts = await postsRepository.getUserPosts(req.params.id);
     return res.send({ data: posts });
   } catch (error) {
     console.log(error);

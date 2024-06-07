@@ -28,11 +28,15 @@ export const createPost = async (
   // 4.1. each time someone creates a post, we should get a list of their friends and send them emails and SMS notifications
   const createPost = await postsRepository.create(userId, title, content);
   const friends = await usersRepository.getUserFriends(userId);
-  const posts = await postsRepository.getUserPost(userId);
+  const posts = await postsRepository.getUserPosts(userId);
+
+  const friendsList = friends?.receiverFriends.concat(
+    friends?.requesterFriends
+  );
 
   await analyticsRepository.createAnalytics("create post", {
     authorId: userId,
-    authorsFriendsCount: friends?.friendsA.length,
+    authorsFriendsCount: friendsList?.length || 0,
     authorsPostsCount: posts.length,
     postTitle: title,
     postContentLength: content.length,

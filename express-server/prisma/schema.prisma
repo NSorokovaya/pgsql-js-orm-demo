@@ -124,8 +124,8 @@ model users {
   user_avatars       user_avatars?
   user_permissions   user_permissions[]
   user_roles         user_roles[]
-  friendsA           friends[]            @relation(name: "requester")
-  friendsB           friends[]            @relation(name: "receiver")
+  receiverFriends    friends[]            @relation(name: "requester")
+  requesterFriends   friends[]            @relation(name: "receiver")
   users_emails       users_emails[]
 }
 
