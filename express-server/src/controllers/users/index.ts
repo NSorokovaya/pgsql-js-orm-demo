@@ -5,6 +5,7 @@ import { getUserPermission } from "./getUserPermission";
 import { update } from "./update-user";
 import { deleteUserWithPosts } from "./delete-user-with-posts";
 import { addFriend } from "./add-friend";
+import { getUserFriends } from "./get-user-friends";
 
 const usersRouter = express.Router();
 
@@ -14,5 +15,6 @@ usersRouter.get("/:id/permissions", getUserPermission);
 usersRouter.patch("/:id", update);
 usersRouter.delete("/:id", deleteUserWithPosts);
 usersRouter.post("/:requesterId/:receiverId", addFriend);
+usersRouter.get("/:id/friends", getUserFriends);
 
 export { usersRouter };

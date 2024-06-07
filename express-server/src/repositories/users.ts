@@ -110,3 +110,17 @@ export const createFriendRequest = async (
     console.error("Error creating friend request:", error);
   }
 };
+
+export const getUserFriends = async (userID: string) => {
+  const friends = await prisma.users.findUnique({
+    where: { id: userID },
+    include: {
+      friendsA: {
+        include: {
+          receiver: true,
+        },
+      },
+    },
+  });
+  return friends;
+};

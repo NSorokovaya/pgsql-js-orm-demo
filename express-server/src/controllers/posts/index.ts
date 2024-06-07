@@ -12,6 +12,7 @@ import { authMiddleware } from "../../middlewares/auth";
 import { allowedCreatePostsMiddleware } from "../../middlewares/posts/allowed-create-posts";
 import { allowedUpdatePostMiddleware } from "../../middlewares/posts/allowed-update-post";
 import { getCommentsByPost } from "./get-comments-by-post-id";
+import { getUserPosts } from "./get-user-posts";
 
 const postsRouter = express.Router();
 
@@ -22,6 +23,7 @@ postsRouter.patch("/:id", [authMiddleware], update);
 postsRouter.put("/:id/unarchive", [authMiddleware], unarchive);
 postsRouter.delete("/:id/archive", [authMiddleware], archive);
 postsRouter.delete("/:id", [authMiddleware], destroy);
+postsRouter.get("/:id/user", getUserPosts);
 
 postsRouter.get("/:postId/comments", getCommentsByPost);
 
