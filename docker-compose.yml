@@ -6,9 +6,19 @@ services:
       dockerfile: Dockerfile
     restart: always
     ports:
-      - 5432:5432
+      - 5433:5432
     volumes:
       - db-data:/var/lib/postgresql/data
 
+
+  mongodb:
+    image: mongo
+    restart: always
+    ports:
+      - 27017:27017
+    volumes:
+      - mongo-data:/data/db
 volumes:
   db-data:
+  mongo-data:
+
